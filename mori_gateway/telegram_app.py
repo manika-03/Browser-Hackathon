@@ -109,7 +109,12 @@ async def _forward(update: Update, context: ContextTypes.DEFAULT_TYPE, event: di
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if await _allowed(update, context): await _send(update, START)
+    if not await _allowed(update, context):
+        return
+    if context.args and context.args[0].lower() == "demo":
+        await _forward(update, context, _event(update, "command", command="demo"))
+        return
+    await _send(update, START)
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

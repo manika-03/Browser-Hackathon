@@ -2,6 +2,8 @@
 
 Telegram bot: https://t.me/MoriPathBot
 
+Judge-ready demo link: https://t.me/MoriPathBot?start=demo
+
 This service owns MORI's Telegram conversation layer and forwards normalized events to the partner backend. If `MORI_BACKEND_URL` is blank, it uses a stateful local demo backend with complete learning-roadmap and opportunity flows.
 
 For partner integration and safe GitHub sharing, start with [HANDOFF.md](HANDOFF.md). Commit `.env.example`, but never commit `.env` or any real secret value.
