@@ -13,7 +13,7 @@ HELP = """Try asking:
 - Find upcoming hackathons in Delhi-NCR.
 - Help me review this Google Form.
 
-Commands: /start, /reset, /about, /privacy"""
+Commands: /start, /demo, /webcmd, /reset, /about, /privacy"""
 
 ABOUT = """MORI turns learning goals into sourced, realistic routes. Fit matters more than popularity, and paid recommendations need a clear reason."""
 
@@ -27,4 +27,3 @@ START = Result(
         Action("starter:form", "Review a form"),
     ),
 )
-

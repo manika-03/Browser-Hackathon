@@ -18,6 +18,8 @@ from .persona import ABOUT, HELP, PRIVACY, START
 LOG = logging.getLogger(__name__)
 COMMANDS = (
     BotCommand("start", "Start with MORI"),
+    BotCommand("demo", "Show a complete ML roadmap"),
+    BotCommand("webcmd", "Check the Webcmd integration"),
     BotCommand("help", "See what MORI can do"),
     BotCommand("reset", "Reset this conversation"),
     BotCommand("about", "About MORI"),
@@ -126,6 +128,14 @@ async def reset(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if await _allowed(update, context): await _forward(update, context, _event(update, "command", command="reset"))
 
 
+async def demo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if await _allowed(update, context): await _forward(update, context, _event(update, "command", command="demo"))
+
+
+async def webcmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if await _allowed(update, context): await _forward(update, context, _event(update, "command", command="webcmd"))
+
+
 async def text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if await _allowed(update, context):
         value = update.effective_message.text if update.effective_message else ""
@@ -161,6 +171,8 @@ def build(settings: Settings) -> Application:
     app.bot_data["settings"] = settings
     app.bot_data["backend"] = HttpBackend(settings.backend_url, settings.backend_timeout, settings.backend_api_key) if settings.backend_url else MockBackend()
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("demo", demo))
+    app.add_handler(CommandHandler("webcmd", webcmd_status))
     app.add_handler(CommandHandler("help", help_command))
     app.add_handler(CommandHandler("reset", reset))
     app.add_handler(CommandHandler("about", about))
