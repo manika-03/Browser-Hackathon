@@ -5,7 +5,7 @@ from datetime import UTC, datetime
 from typing import Any
 from uuid import uuid4
 
-from telegram import BotCommand, InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.constants import ChatAction
 from telegram.ext import Application, ApplicationBuilder, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters
 
@@ -16,17 +16,6 @@ from .persona import ABOUT, HELP, PRIVACY, START
 
 
 LOG = logging.getLogger(__name__)
-COMMANDS = (
-    BotCommand("start", "Start with MORI"),
-    BotCommand("demo", "Show a complete ML roadmap"),
-    BotCommand("webcmd", "Check the Webcmd integration"),
-    BotCommand("help", "See what MORI can do"),
-    BotCommand("reset", "Reset this conversation"),
-    BotCommand("about", "About MORI"),
-    BotCommand("privacy", "Privacy and approval rules"),
-)
-
-
 class RedactingFormatter(logging.Formatter):
     def __init__(self, secret: str) -> None:
         super().__init__("%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -159,10 +148,8 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def post_init(app: Application) -> None:
-    await app.bot.set_my_name("MORI")
-    await app.bot.set_my_short_description("Learning paths, trusted resources, hackathons, and careful application help.")
-    await app.bot.set_my_description("MORI turns goals into sourced learning routes with courses, certifications, videos, hackathons, and approval-first form help.")
-    await app.bot.set_my_commands(COMMANDS)
+    # Profile metadata is configured once through BotFather. Rewriting it on every
+    # process restart can trigger Telegram flood control and prevent polling.
     identity = await app.bot.get_me()
     LOG.info("Connected as @%s", identity.username)
 
@@ -190,4 +177,4 @@ def build(settings: Settings) -> Application:
 def run() -> None:
     settings = Settings.from_environment()
     configure_logging(settings)
-    build(settings).run_polling(allowed_updates=Update.ALL_TYPES)
+    build(settings).run_polling(allowed_updates=Update.ALL_TYPES, bootstrap_retries=-1)
