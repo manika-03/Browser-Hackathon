@@ -14,7 +14,7 @@ For partner integration and safe GitHub sharing, start with [HANDOFF.md](HANDOFF
 .\.venv\Scripts\python.exe -m mori_gateway
 ```
 
-In Telegram, send `/demo` for the guaranteed end-to-end ML roadmap and `/webcmd` to verify the local Webcmd integration.
+In Telegram, send `/demo` for the guided end-to-end roadmap conversation and `/webcmd` to verify the local Webcmd integration.
 
 ## Connect the backend
 

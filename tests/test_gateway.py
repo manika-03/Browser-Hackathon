@@ -30,6 +30,25 @@ class GatewayTests(unittest.IsolatedAsyncioTestCase):
         result = await backend.respond(payload)
         self.assertIn("MORI ROADMAP", result.text)
 
+    async def test_demo_runs_as_guided_conversation(self) -> None:
+        backend = MockBackend()
+        payload = {"session_id": "telegram:3", "event": {"type": "command", "command": "demo"}}
+        result = await backend.respond(payload)
+        self.assertIn("Hi, I'm MORI", result.text)
+        self.assertEqual(result.actions[0].id, "demo:ml")
+
+        payload["event"] = {"type": "action", "action_id": "demo:ml"}
+        result = await backend.respond(payload)
+        self.assertIn("current level", result.text)
+
+        payload["event"] = {"type": "action", "action_id": "profile:beginner"}
+        result = await backend.respond(payload)
+        self.assertIn("weekly hours", result.text)
+
+        payload["event"] = {"type": "text", "text": "Delhi, 10 hours, mostly free"}
+        result = await backend.respond(payload)
+        self.assertIn("MORI ROADMAP", result.text)
+
     def test_response_contract(self) -> None:
         result = Result.parse({"text": "Ready", "actions": [{"id": "go", "label": "Go"}]})
         self.assertEqual(result.actions[0], Action("go", "Go"))

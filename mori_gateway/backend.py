@@ -70,7 +70,14 @@ class LocalDemoBackend:
                 self.sessions[session_id] = Session()
                 return Result("Fresh start. Tell me what you want to learn or find.")
             if command == "demo":
-                return self._roadmap(session)
+                self.sessions[session_id] = Session()
+                return Result(
+                    "Hi, I'm MORI. I turn career goals into practical learning paths and real opportunities.\n\nWhat would you like to become or learn?",
+                    (
+                        Action("demo:ml", "ML Engineer"),
+                        Action("demo:automation", "AI Automation"),
+                    ),
+                )
             if command == "webcmd":
                 return await self._webcmd_status()
 
@@ -117,10 +124,17 @@ class LocalDemoBackend:
         )
 
     def _action(self, session: Session, action_id: str) -> Result:
-        if action_id in {"demo:ml", "goal:free", "goal:credential"}:
+        if action_id in {"goal:free", "goal:credential"}:
             session.preference = "best credential" if action_id == "goal:credential" else "mostly free"
             session.awaiting_profile = False
             return self._roadmap(session)
+        if action_id in {"demo:ml", "demo:automation"}:
+            session.goal = "machine learning engineer" if action_id == "demo:ml" else "AI automation specialist"
+            session.awaiting_profile = True
+            return Result(
+                f"Excellent choice. What is your current level in {session.goal}?",
+                (Action("profile:beginner", "Beginner"), Action("profile:intermediate", "Intermediate")),
+            )
         if action_id == "starter:learning":
             session.awaiting_profile = True
             return Result("What do you want to learn or become? Include your level, location, hours per week, and budget if you know them.")
